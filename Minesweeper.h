@@ -1,24 +1,38 @@
-#include <random>
-#include <utility>
+// #include <random>
+#include <vector>
+// #include <utility>
+#define MINECOUNT 10
 
 struct BoardTile{
-    bool isMine;
-    int position[2];
-};
-
-struct BoardSize{
-    int xsize, ysize;
+    bool isMine = false;
+    bool isRevealed = false;
+    bool isFlagged = false;
+    int neighborMines = 0;
 };
 
 class MinesweeperBoard{
     private:
-    BoardSize Size;
-    std::vector<int[2]> MinePositions;
-    void InitializeMines(int);
+        std::pair<int, int> BoardSize;
+        std::vector<std::vector<BoardTile>> Grid;
+        void InitializeMines(int);
+        void setBoardSize(int, int);
+        void initializeBoard();
+        bool isGameOver = false;
+        bool isGameWon = false;
+        int CalculateNeighborMines(int, int);
+        int TotalMines;
+        int RemainingMines;
+        int RevealedTiles = 0;
+
 
     public:
-    MinesweeperBoard(int, int);
-    void DrawEmptyBoardASCII();
-    BoardSize getBoardSize();
-    void setBoardSize(int, int);
+        MinesweeperBoard(int, int);
+        void DrawBoardASCII();
+        std::pair<int, int> getBoardSize();
+        void RevealTile(int, int);
+        bool GetGameOverState();
+        void DrawBoardFull();
+        void ToggleFlagTile(int, int);
+        bool GetGameWonState();
+    
 };
