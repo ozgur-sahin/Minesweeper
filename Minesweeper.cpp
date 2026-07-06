@@ -59,7 +59,7 @@ bool MinesweeperBoard::GetGameWonState(){
 void MinesweeperBoard::DrawBoardFull(){
     char MineChar='o';
     for (std::vector<BoardTile> row : Grid){
-        for(BoardTile tile:row){
+        for(BoardTile tile : row){
             if(tile.isMine){
                 std::cout << MineChar;
             }
@@ -100,6 +100,9 @@ void MinesweeperBoard::setBoardSize(int x, int y){
 }
 
 void MinesweeperBoard::RevealTile(int x, int y){
+    if(!Grid[x][y].isRevealed){
+        return;
+    }
     Grid[x][y].isRevealed = true;
     if(Grid[x][y].isMine){
         this -> isGameOver = true;
