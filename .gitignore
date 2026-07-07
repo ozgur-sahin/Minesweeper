@@ -69,3 +69,8 @@ Testing/
 
 Minesweeper
 .DS_STORE
+
+.qt
+moc*
+*timestamp
+*deps*
