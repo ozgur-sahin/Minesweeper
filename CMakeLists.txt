@@ -21,3 +21,5 @@ add_executable(Minesweeper ${SOURCES})
 
 # 5. Link the Qt6 graphics engine to your compiled binary target
 target_link_libraries(Minesweeper PRIVATE Qt6::Widgets)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
