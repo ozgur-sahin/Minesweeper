@@ -5,8 +5,6 @@
 
 #include "Minesweeper.h"
 
-
-
 MinesweeperBoard::MinesweeperBoard(int x, int y){
     this -> setBoardSize(x, y);
     this -> initializeBoard();
@@ -100,7 +98,7 @@ void MinesweeperBoard::setBoardSize(int x, int y){
 }
 
 void MinesweeperBoard::RevealTile(int x, int y){
-    if(!Grid[x][y].isRevealed){
+    if(Grid[x][y].isRevealed){
         return;
     }
     Grid[x][y].isRevealed = true;
