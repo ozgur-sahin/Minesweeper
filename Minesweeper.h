@@ -1,5 +1,6 @@
 // #include <random>
 #include <vector>
+#include <stdexcept>
 // #include <utility>
 #define MINECOUNT 10
 

@@ -13,11 +13,13 @@ MinesweeperBoard::MinesweeperBoard(int x, int y){
 }
 
 void MinesweeperBoard::DrawBoardASCII(){
+
     char UnrevealedTileChar = '*';
     char FlaggedTileChar= '#';
     char MineChar='o';
     char ZeroMineTileChar='x';
-   for (std::vector<BoardTile> row : Grid){
+
+    for (std::vector<BoardTile> row : Grid){
         for(BoardTile tile:row){
             if(tile.isFlagged){
                 std::cout << FlaggedTileChar;
@@ -38,7 +40,7 @@ void MinesweeperBoard::DrawBoardASCII(){
             }
         }
         std::cout << '\n';
-   }
+    }
 }
 
 void MinesweeperBoard::initializeBoard(){
@@ -66,10 +68,16 @@ void MinesweeperBoard::DrawBoardFull(){
             }
         }
         std::cout << '\n';
-   }
+    }
 }
 
 void MinesweeperBoard::InitializeMines(int minecount){
+
+    if(Size.row * Size.col <= minecount){
+        throw std::runtime_error(
+            "Invalid board configuration.\n\
+             More mines to be placed than there are tiles.");
+    }
     std::random_device rnd;
     std::mt19937 gen(rnd());
 
