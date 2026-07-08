@@ -6,10 +6,10 @@
 #include "Minesweeper.h"
 
 MinesweeperBoard::MinesweeperBoard(int x, int y){
-    this -> setBoardSize(x, y);
-    this -> initializeBoard();
-    this -> TotalMines = MINECOUNT;
-    this -> RemainingMines = MINECOUNT;
+    setBoardSize(x, y);
+    initializeBoard();
+    TotalMines = MINECOUNT;
+    RemainingMines = MINECOUNT;
 }
 
 void MinesweeperBoard::DrawBoardASCII(){
@@ -42,16 +42,16 @@ void MinesweeperBoard::DrawBoardASCII(){
 }
 
 void MinesweeperBoard::initializeBoard(){
-    Grid.resize(BoardSize.first, std::vector<BoardTile>(BoardSize.second));
-    this -> InitializeMines(MINECOUNT);
+    Grid.resize(Size.row, std::vector<BoardTile>(Size.col));
+    InitializeMines(MINECOUNT);
 }
 
 bool MinesweeperBoard::GetGameOverState(){
-    return this -> isGameOver;
+    return isGameOver;
 }
 
 bool MinesweeperBoard::GetGameWonState(){
-    return this -> isGameWon;
+    return isGameWon;
 }
 
 void MinesweeperBoard::DrawBoardFull(){
@@ -73,8 +73,8 @@ void MinesweeperBoard::InitializeMines(int minecount){
     std::random_device rnd;
     std::mt19937 gen(rnd());
 
-    std::uniform_int_distribution<> disRow(0, this -> BoardSize.first - 1);
-    std::uniform_int_distribution<> disCol(0, this -> BoardSize.second - 1);
+    std::uniform_int_distribution<> disRow(0, Size.row - 1);
+    std::uniform_int_distribution<> disCol(0, Size.col - 1);
 
     int placedMines=0;
 
@@ -89,12 +89,12 @@ void MinesweeperBoard::InitializeMines(int minecount){
 
 }
 
-std::pair<int, int> MinesweeperBoard::getBoardSize(){
-    return this -> BoardSize;
+BoardSize MinesweeperBoard::getBoardSize(){
+    return Size;
 }
 
 void MinesweeperBoard::setBoardSize(int x, int y){
-    this -> BoardSize = {x, y};
+    Size = {x, y};
 }
 
 void MinesweeperBoard::RevealTile(int x, int y){
@@ -103,32 +103,32 @@ void MinesweeperBoard::RevealTile(int x, int y){
     }
     Grid[x][y].isRevealed = true;
     if(Grid[x][y].isMine){
-        this -> isGameOver = true;
+        isGameOver = true;
         return;
     }
-    this -> RevealedTiles++;
-    Grid[x][y].neighborMines = this -> CalculateNeighborMines(x, y);
+    RevealedTiles++;
+    Grid[x][y].neighborMines = CalculateNeighborMines(x, y);
 
     if(Grid[x][y].neighborMines == 0){
-        for(int h=std::max(x-1, 0); h<=std::min(x+1, this -> BoardSize.first-1); h++){
-            for(int v=std::max(y-1, 0); v<=std::min(y+1, this -> BoardSize.second-1); v++){
-                if(!this -> Grid[h][v].isRevealed){
-                    this -> RevealTile(h,v);
+        for(int h = std::max(x-1, 0); h <= std::min(x+1, Size.row-1); h++){
+            for(int v = std::max(y-1, 0); v <= std::min(y+1, Size.col-1); v++){
+                if(!Grid[h][v].isRevealed){
+                    RevealTile(h,v);
                 }
             }
         }
     }
 
-    if(RevealedTiles >= this -> BoardSize.first * this -> BoardSize.second - TotalMines){
-        this -> isGameWon = true;
+    if(RevealedTiles >= Size.row * Size.col - TotalMines){
+        isGameWon = true;
     }
 }
 
 int MinesweeperBoard::CalculateNeighborMines(int x, int y){
     int MineCount=0;
-    for(int h=std::max(x-1, 0); h<=std::min(x+1, this -> BoardSize.first-1); h++){
-        for(int v=std::max(y-1, 0); v<=std::min(y+1, this -> BoardSize.second-1); v++){
-            if(this -> Grid[h][v].isMine){
+    for(int h=std::max(x-1, 0); h<=std::min(x+1, Size.row-1); h++){
+        for(int v=std::max(y-1, 0); v<=std::min(y+1, Size.col-1); v++){
+            if(Grid[h][v].isMine){
                 MineCount++;
             }
         }
@@ -137,11 +137,11 @@ int MinesweeperBoard::CalculateNeighborMines(int x, int y){
 }
 
 void MinesweeperBoard::ToggleFlagTile(int x, int y){
-    this -> Grid[x][y].isFlagged = !this -> Grid[x][y].isFlagged;
+    Grid[x][y].isFlagged = !Grid[x][y].isFlagged;
     if(Grid[x][y].isFlagged){
-        this -> RemainingMines--;
+        RemainingMines--;
     }
     else{
-        this -> RemainingMines++;
+        RemainingMines++;
     }
 }

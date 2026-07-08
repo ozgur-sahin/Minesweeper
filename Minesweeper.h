@@ -10,9 +10,14 @@ struct BoardTile{
     int neighborMines = 0;
 };
 
+struct BoardSize{
+    int row;
+    int col;
+};
+
 class MinesweeperBoard{
     private:
-        std::pair<int, int> BoardSize;
+        BoardSize Size;
         std::vector<std::vector<BoardTile>> Grid;
         void InitializeMines(int);
         void setBoardSize(int, int);
@@ -28,7 +33,7 @@ class MinesweeperBoard{
     public:
         MinesweeperBoard(int, int);
         void DrawBoardASCII();
-        std::pair<int, int> getBoardSize();
+        BoardSize getBoardSize();
         void RevealTile(int, int);
         bool GetGameOverState();
         void DrawBoardFull();
