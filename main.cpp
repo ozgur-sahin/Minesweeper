@@ -8,42 +8,43 @@
 #define BOARDSIZEX 5
 #define BOARDSIZEY 5
 
-// int main(){
-//     MinesweeperBoard board = MinesweeperBoard(BOARDSIZEX, BOARDSIZEY);
-//     board.DrawBoardFull();
-//     // board.DrawBoardASCII();
+#define QTVERSION true
+#define TERMINALVERSION true
 
-//     while (1){
-//         int selectedRow, selectedCol;
-//         std::cout << "Enter row number: ";
-//         std::cin >> selectedRow;
-//         std::cout << "Enter column number: ";
-//         std::cin >> selectedCol;
-//         if(selectedRow >= board.getBoardSize().first 
-//         || selectedCol >= board.getBoardSize().second
-//         || selectedRow<0
-//         || selectedCol<0){
-//             std::cout << "Invalid Choice\n";
-//         }
-//         else{
-//             board.RevealTile(selectedRow, selectedCol);
-//             board.DrawBoardASCII();
-//             if(board.GetGameOverState()){
-//                 std::cout << "Game over :(\n";
-//                 break;
-//             }
-//             else if(board.GetGameWonState()){
-//                 std::cout << "Congratulations! You won!\n";
-//                 break;
-//             }
-//         }
-//     }
-//     return 0;
-// }
+int terminalgame(){
+    MinesweeperBoard board = MinesweeperBoard(BOARDSIZEX, BOARDSIZEY);
+    board.DrawBoardFull();
+    // board.DrawBoardASCII();
 
+    while (1){
+        int selectedRow, selectedCol;
+        std::cout << "Enter row number: ";
+        std::cin >> selectedRow;
+        std::cout << "Enter column number: ";
+        std::cin >> selectedCol;
+        if(selectedRow >= board.getBoardSize().row 
+        || selectedCol >= board.getBoardSize().col
+        || selectedRow<0
+        || selectedCol<0){
+            std::cout << "Invalid Choice\n";
+        }
+        else{
+            board.RevealTile(selectedRow, selectedCol);
+            board.DrawBoardASCII();
+            if(board.GetGameOverState()){
+                std::cout << "Game over :(\n";
+                break;
+            }
+            else if(board.GetGameWonState()){
+                std::cout << "Congratulations! You won!\n";
+                break;
+            }
+        }
+    }
+    return 0;
+}
 
-
-int main(int argc, char *argv[]) {
+int qtgame(int argc, char* argv[]){
     // 1. Initialize the main Qt application manager loop
     QApplication app(argc, argv);
 
@@ -60,4 +61,17 @@ int main(int argc, char *argv[]) {
     // 5. Hand control over to the application engine loop. 
     // It keeps the window open until you click the native 'X' close button.
     return app.exec();
+}
+
+
+
+int main(int argc, char *argv[]) {
+
+    if(QTVERSION){
+        qtgame(argc, argv);
+    }
+
+    if(TERMINALVERSION){
+        terminalgame();
+    }
 }
