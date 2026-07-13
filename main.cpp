@@ -1,4 +1,4 @@
-#include "Minesweeper.h"
+#include "MinesweeperBoard.h"
 #include "GameWindow.h"
 
 #include <iostream>
@@ -55,11 +55,7 @@ int qtgame(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // 2. Instantiate a basic, empty graphical desktop window widget
-    GameWindow window;
-
-    // 3. Customize the window properties (Width, Height in pixels)
-    window.resize(400, 400);
-    window.setWindowTitle("Minesweeper");
+    GameWindow window{nullptr, 400, 400};
 
     // 4. Force the operating system to render the window visually on screen
     window.show();

@@ -1,3 +1,4 @@
+#pragma once
 // #include <random>
 #include <vector>
 #include <stdexcept>
@@ -42,4 +43,7 @@ public:
     void DrawBoardFull();
     void ToggleFlagTile(int, int);
     bool GetGameWonState();
+    bool GetRevealedState(int, int);
+    int GetNeighborMines(int, int);
+    bool GetIsMine(int, int);
 };

@@ -3,7 +3,7 @@
 #include <vector>
 #include <random>
 
-#include "Minesweeper.h"
+#include "MinesweeperBoard.h"
 
 MinesweeperBoard::MinesweeperBoard(int x, int y)
 {
@@ -190,4 +190,19 @@ void MinesweeperBoard::ToggleFlagTile(int x, int y)
     {
         RemainingMines++;
     }
+}
+
+bool MinesweeperBoard::GetRevealedState(int row, int col)
+{
+    return Grid[row][col].isRevealed;
+}
+
+int MinesweeperBoard::GetNeighborMines(int row, int col)
+{
+    return Grid[row][col].neighborMines;
+}
+
+bool MinesweeperBoard::GetIsMine(int row, int col)
+{
+    return Grid[row][col].isMine;
 }
