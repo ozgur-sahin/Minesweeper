@@ -123,14 +123,14 @@ BoardSize MinesweeperBoard::getBoardSize()
     return Size;
 }
 
-void MinesweeperBoard::setBoardSize(int x, int y)
+void inline MinesweeperBoard::setBoardSize(int x, int y)
 {
     Size = {x, y};
 }
 
 void MinesweeperBoard::RevealTile(int x, int y)
 {
-    if (Grid[x][y].isRevealed)
+    if (Grid[x][y].isRevealed || Grid[x][y].isFlagged)
     {
         return;
     }
@@ -181,6 +181,9 @@ int MinesweeperBoard::CalculateNeighborMines(int x, int y)
 
 void MinesweeperBoard::ToggleFlagTile(int x, int y)
 {
+    if (Grid[x][y].isRevealed)
+        return;
+
     Grid[x][y].isFlagged = !Grid[x][y].isFlagged;
     if (Grid[x][y].isFlagged)
     {

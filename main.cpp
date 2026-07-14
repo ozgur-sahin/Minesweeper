@@ -55,7 +55,7 @@ int qtgame(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // 2. Instantiate a basic, empty graphical desktop window widget
-    GameWindow window{nullptr, 400, 400};
+    GameWindow window{400, 400};
 
     // 4. Force the operating system to render the window visually on screen
     window.show();

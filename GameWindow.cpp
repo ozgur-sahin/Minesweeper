@@ -1,10 +1,9 @@
 #include "GameWindow.h"
 
-GameWindow::GameWindow(QWidget *parent, int HSize, int VSize) : QWidget(parent)
+GameWindow::GameWindow(int HSize, int VSize, QWidget *parent) : QWidget(parent)
 {
     GameBoard = new MinesweeperBoard{5, 5};
     GameBoard->DrawBoardFull();
-    // std::cout << "Board initialized...\n";
     this->resize(HSize, VSize);
     this->setWindowTitle("Minesweeper");
 
@@ -24,9 +23,8 @@ GameWindow::GameWindow(QWidget *parent, int HSize, int VSize) : QWidget(parent)
         {
             tile = new MinesweeperQtTile(rowNo, colNo, this);
             tile->resize(80, 80);
-            // tile->setProperty("rowNo", rowNo);
-            // tile->setProperty("colNo", colNo);
             layout->addWidget(tile, rowNo, colNo);
+            tile->setText(" ");
             connect(tile, &MinesweeperQtTile::leftclicked, this, &GameWindow::onLeftClick);
             connect(tile, &MinesweeperQtTile::rightclicked, this, &GameWindow::onRightClick);
 
@@ -39,13 +37,13 @@ GameWindow::GameWindow(QWidget *parent, int HSize, int VSize) : QWidget(parent)
 
 void GameWindow::onLeftClick()
 {
-    std::cout << "The button was left clicked!" << std::endl;
+    // std::cout << "The button was left clicked!" << std::endl;
     MinesweeperQtTile *clickedButton = qobject_cast<MinesweeperQtTile *>(sender());
 
     if (clickedButton)
     {
         TileCoordinates coord = clickedButton->getTileCoordinates();
-        std::cout << coord.rowNo << " " << coord.colNo << "\n";
+        // std::cout << coord.rowNo << " " << coord.colNo << "\n";
         GameBoard->RevealTile(coord.rowNo, coord.colNo);
     }
     else
@@ -64,7 +62,7 @@ void GameWindow::onRightClick()
     if (clickedButton)
     {
         TileCoordinates coord = clickedButton->getTileCoordinates();
-        std::cout << coord.rowNo << " " << coord.colNo << "\n";
+        // std::cout << coord.rowNo << " " << coord.colNo << "\n";
         GameBoard->ToggleFlagTile(coord.rowNo, coord.colNo);
     }
     else
@@ -81,7 +79,7 @@ void GameWindow::ReDrawBoard()
     {
         for (auto &tile : row)
         {
-            if (tile != nullptr)
+            if (tile)
             {
                 TileCoordinates coord = tile->getTileCoordinates();
                 if (GameBoard->GetRevealedState(coord.rowNo, coord.colNo))
@@ -93,7 +91,7 @@ void GameWindow::ReDrawBoard()
                     else
                     {
                         int neighborMines = GameBoard->GetNeighborMines(coord.rowNo, coord.colNo);
-                        // std::cout << neighborMines << "\n";
+                        std::cout << neighborMines << "\n";
                         tile->setText(QString::number(neighborMines));
                     }
                 }
@@ -116,6 +114,14 @@ void GameWindow::ReDrawBoard()
 
 GameWindow::~GameWindow()
 {
+    for (auto &row : GameGrid)
+    {
+        for (auto &tile : row)
+        {
+            delete tile;
+        }
+    }
+    std::cout << "All tiles deleted\n";
     delete GameBoard;
     std::cout << "Board deleted. Exiting game...\n";
 }
