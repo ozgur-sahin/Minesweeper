@@ -56,7 +56,7 @@ void MinesweeperBoard::DrawBoardASCII()
 void MinesweeperBoard::initializeBoard()
 {
     Grid.resize(Size.row, std::vector<BoardTile>(Size.col));
-    InitializeMines(MINECOUNT);
+    // InitializeMines(MINECOUNT);
 }
 
 bool MinesweeperBoard::GetGameOverState()
@@ -89,10 +89,10 @@ void MinesweeperBoard::DrawBoardFull()
     }
 }
 
-void MinesweeperBoard::InitializeMines(int minecount)
+void MinesweeperBoard::InitializeMines(int minecount, int row, int col)
 {
 
-    if (Size.row * Size.col <= minecount)
+    if (Size.row * Size.col <= minecount - 1)
     {
         throw std::runtime_error(
             "Invalid board configuration.\n\
@@ -110,12 +110,21 @@ void MinesweeperBoard::InitializeMines(int minecount)
     {
         int RowNumber = disRow(gen);
         int ColNumber = disCol(gen);
+        if (std::abs(RowNumber - row) <= 1 && std::abs(ColNumber - col) <= 1)
+        {
+            // std::cout << "Mine placement failed at ";
+            // std::cout << RowNumber << " " << ColNumber << "\n";
+            continue;
+        }
         if (!Grid[RowNumber][ColNumber].isMine)
         {
             Grid[RowNumber][ColNumber].isMine = true;
             placedMines++;
+            // std::cout << "Mine is placed at ";
+            // std::cout << RowNumber << " " << ColNumber << "\n";
         }
     }
+    DrawBoardFull();
 }
 
 BoardSize MinesweeperBoard::getBoardSize()
@@ -135,11 +144,19 @@ void MinesweeperBoard::RevealTile(int x, int y)
         return;
     }
     Grid[x][y].isRevealed = true;
+
+    if (!isBoardInitialized)
+    {
+        isBoardInitialized = true;
+        InitializeMines(MINECOUNT, x, y);
+    }
+
     if (Grid[x][y].isMine)
     {
         isGameOver = true;
         return;
     }
+
     RevealedTiles++;
     Grid[x][y].neighborMines = CalculateNeighborMines(x, y);
 

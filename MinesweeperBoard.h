@@ -24,11 +24,12 @@ class MinesweeperBoard
 private:
     BoardSize Size;
     std::vector<std::vector<BoardTile>> Grid;
-    void InitializeMines(int);
+    void InitializeMines(int, int, int);
     void setBoardSize(int, int);
     void initializeBoard();
     bool isGameOver = false;
     bool isGameWon = false;
+    bool isBoardInitialized = false;
     int CalculateNeighborMines(int, int);
     int TotalMines;
     int RemainingMines;
