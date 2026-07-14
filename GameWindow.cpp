@@ -51,6 +51,16 @@ void GameWindow::onLeftClick()
         std::cout << "Bad button!\n";
     }
     ReDrawBoard();
+    if (GameBoard->GetGameOverState())
+    {
+        onGameOver();
+        return;
+    }
+    if (GameBoard->GetGameWonState())
+    {
+        onGameWin();
+        return;
+    }
 }
 
 void GameWindow::onRightClick()
@@ -70,6 +80,29 @@ void GameWindow::onRightClick()
         std::cout << "Bad button!\n";
     }
     ReDrawBoard();
+}
+
+void GameWindow::DisableAllTiles()
+{
+    for (auto &row : GameGrid)
+    {
+        for (auto &tile : row)
+        {
+            tile->setDisabled(true);
+        }
+    }
+}
+
+void GameWindow::onGameOver()
+{
+    std::cout << "Game over :(\n";
+    DisableAllTiles();
+}
+
+void GameWindow::onGameWin()
+{
+    std::cout << "Congratulations! You won!\n";
+    DisableAllTiles();
 }
 
 void GameWindow::ReDrawBoard()

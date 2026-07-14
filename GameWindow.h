@@ -22,6 +22,9 @@ private:
     MinesweeperBoard *GameBoard;
 
     void ReDrawBoard();
+    void onGameOver();
+    void onGameWin();
+    void DisableAllTiles();
 
 private slots:
     // The functions that execute when the click signal fires
