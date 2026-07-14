@@ -46,4 +46,5 @@ public:
     bool GetRevealedState(int, int);
     int GetNeighborMines(int, int);
     bool GetIsMine(int, int);
+    bool GetFlaggedState(int, int);
 };

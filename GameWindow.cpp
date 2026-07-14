@@ -15,19 +15,20 @@ GameWindow::GameWindow(QWidget *parent, int HSize, int VSize) : QWidget(parent)
     // std::cout << "Layout created...\n";
 
     int rowNo = 0;
-    GameGrid.resize(5, std::vector<QPushButton *>(5));
-    for (std::vector<QPushButton *> &row : GameGrid)
+    GameGrid.resize(5, std::vector<MinesweeperQtTile *>(5));
+    for (std::vector<MinesweeperQtTile *> &row : GameGrid)
     {
         // std::cout << rowNo << std::endl;
         int colNo = 0;
-        for (QPushButton *&tile : row)
+        for (MinesweeperQtTile *&tile : row)
         {
-            tile = new QPushButton(this);
+            tile = new MinesweeperQtTile(rowNo, colNo, this);
             tile->resize(80, 80);
-            tile->setProperty("rowNo", rowNo);
-            tile->setProperty("colNo", colNo);
+            // tile->setProperty("rowNo", rowNo);
+            // tile->setProperty("colNo", colNo);
             layout->addWidget(tile, rowNo, colNo);
-            connect(tile, &QPushButton::clicked, this, &GameWindow::onButtonClicked);
+            connect(tile, &MinesweeperQtTile::leftclicked, this, &GameWindow::onLeftClick);
+            connect(tile, &MinesweeperQtTile::rightclicked, this, &GameWindow::onRightClick);
 
             // std::cout << "Tile: " << rowNo << ", " << colNo << "\n";
             colNo++;
@@ -36,59 +37,78 @@ GameWindow::GameWindow(QWidget *parent, int HSize, int VSize) : QWidget(parent)
     }
 }
 
-void GameWindow::onButtonClicked()
+void GameWindow::onLeftClick()
 {
-    std::cout << "The button was clicked!" << std::endl;
-    QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
+    std::cout << "The button was left clicked!" << std::endl;
+    MinesweeperQtTile *clickedButton = qobject_cast<MinesweeperQtTile *>(sender());
 
     if (clickedButton)
     {
-        std::cout << clickedButton->property("rowNo").toInt() << " " << clickedButton->property("colNo").toInt() << "\n";
-        int rowNo = clickedButton->property("rowNo").toInt();
-        int colNo = clickedButton->property("colNo").toInt();
-        GameBoard->RevealTile(rowNo, colNo);
+        TileCoordinates coord = clickedButton->getTileCoordinates();
+        std::cout << coord.rowNo << " " << coord.colNo << "\n";
+        GameBoard->RevealTile(coord.rowNo, coord.colNo);
     }
     else
     {
         std::cout << "Bad button!\n";
     }
-    std::cout << "Attempting to redraw board now...\n";
+    ReDrawBoard();
+}
+
+void GameWindow::onRightClick()
+{
+    std::cout << "Button was right clicked!\n";
+
+    MinesweeperQtTile *clickedButton = qobject_cast<MinesweeperQtTile *>(sender());
+
+    if (clickedButton)
+    {
+        TileCoordinates coord = clickedButton->getTileCoordinates();
+        std::cout << coord.rowNo << " " << coord.colNo << "\n";
+        GameBoard->ToggleFlagTile(coord.rowNo, coord.colNo);
+    }
+    else
+    {
+        std::cout << "Bad button!\n";
+    }
     ReDrawBoard();
 }
 
 void GameWindow::ReDrawBoard()
 {
-    std::cout << "Redrawing board now...\n";
+    // std::cout << "Redrawing board now...\n";
     for (auto &row : GameGrid)
     {
         for (auto &tile : row)
         {
-            // if (tile == nullptr)
-            // {
-            //     std::cout << "Tile is nullptr!\n";
-            // }
-            // else
-            // {
-            //     std::cout << "Tile is all good!\n";
-            // }
-            if (tile == nullptr)
+            if (tile != nullptr)
             {
-                int rowNo = tile->property("rowNo").toInt();
-                int colNo = tile->property("colNo").toInt();
-                std::cout << rowNo << " " << colNo << "\n";
-                if (GameBoard->GetRevealedState(rowNo, colNo))
+                TileCoordinates coord = tile->getTileCoordinates();
+                if (GameBoard->GetRevealedState(coord.rowNo, coord.colNo))
                 {
-                    if (GameBoard->GetIsMine(rowNo, colNo))
+                    if (GameBoard->GetIsMine(coord.rowNo, coord.colNo))
                     {
                         tile->setText("&x");
                     }
                     else
                     {
-                        int neighborMines = GameBoard->GetNeighborMines(rowNo, colNo);
-                        std::cout << neighborMines << "\n";
+                        int neighborMines = GameBoard->GetNeighborMines(coord.rowNo, coord.colNo);
+                        // std::cout << neighborMines << "\n";
                         tile->setText(QString::number(neighborMines));
                     }
                 }
+                else if (GameBoard->GetFlaggedState(coord.rowNo, coord.colNo))
+                {
+                    tile->setText("&F");
+                }
+                else
+                {
+                    tile->setText("");
+                }
+            }
+            else
+            {
+                std::cerr << "Tile is nullptr!\n";
             }
         }
     }

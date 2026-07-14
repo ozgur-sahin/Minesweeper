@@ -206,3 +206,8 @@ bool MinesweeperBoard::GetIsMine(int row, int col)
 {
     return Grid[row][col].isMine;
 }
+
+bool MinesweeperBoard::GetFlaggedState(int row, int col)
+{
+    return Grid[row][col].isFlagged;
+}
