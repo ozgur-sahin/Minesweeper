@@ -1,5 +1,6 @@
 #include "MinesweeperBoard.h"
 #include "GameWindow.h"
+#include "ConfigStructs.h"
 
 #include <iostream>
 #include <QApplication>
@@ -13,10 +14,12 @@
 #define QTVERSION true
 #define TERMINALVERSION false
 
+Config *conf = new Config;
+
 int terminalgame()
 {
-    MinesweeperBoard board = MinesweeperBoard(BOARDSIZEX, BOARDSIZEY);
-    board.DrawBoardFull();
+    MinesweeperBoard board = MinesweeperBoard(&conf->msconf);
+    // board.DrawBoardFull();
     // board.DrawBoardASCII();
 
     while (1)
@@ -55,7 +58,7 @@ int qtgame(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // 2. Instantiate a basic, empty graphical desktop window widget
-    GameWindow window{400, 400};
+    GameWindow window(conf);
 
     // 4. Force the operating system to render the window visually on screen
     window.show();
@@ -67,6 +70,11 @@ int qtgame(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    if (!conf)
+    {
+        std::cout << "Ding ding ding!!!\n";
+        return 1;
+    }
 
     if (QTVERSION)
     {
@@ -77,4 +85,6 @@ int main(int argc, char *argv[])
     {
         terminalgame();
     }
+
+    return 0;
 }

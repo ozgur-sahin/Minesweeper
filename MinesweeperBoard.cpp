@@ -5,12 +5,14 @@
 
 #include "MinesweeperBoard.h"
 
-MinesweeperBoard::MinesweeperBoard(int x, int y)
+MinesweeperBoard::MinesweeperBoard(MineSweeperConfig *msconf)
 {
-    setBoardSize(x, y);
+    int minecount = msconf->minecount;
+    Size = &msconf->GameBoardSize;
+    setBoardSize(Size->row, Size->col);
     initializeBoard();
-    TotalMines = MINECOUNT;
-    RemainingMines = MINECOUNT;
+    TotalMines = minecount;
+    RemainingMines = minecount;
 }
 
 void MinesweeperBoard::DrawBoardASCII()
@@ -55,7 +57,7 @@ void MinesweeperBoard::DrawBoardASCII()
 
 void MinesweeperBoard::initializeBoard()
 {
-    Grid.resize(Size.row, std::vector<BoardTile>(Size.col));
+    Grid.resize(Size->row, std::vector<BoardTile>(Size->col));
     // InitializeMines(MINECOUNT);
 }
 
@@ -92,7 +94,7 @@ void MinesweeperBoard::DrawBoardFull()
 void MinesweeperBoard::InitializeMines(int minecount, int row, int col)
 {
 
-    if (Size.row * Size.col <= minecount - 1)
+    if (Size->row * Size->col <= minecount - 1)
     {
         throw std::runtime_error(
             "Invalid board configuration.\n\
@@ -101,8 +103,8 @@ void MinesweeperBoard::InitializeMines(int minecount, int row, int col)
     std::random_device rnd;
     std::mt19937 gen(rnd());
 
-    std::uniform_int_distribution<> disRow(0, Size.row - 1);
-    std::uniform_int_distribution<> disCol(0, Size.col - 1);
+    std::uniform_int_distribution<> disRow(0, Size->row - 1);
+    std::uniform_int_distribution<> disCol(0, Size->col - 1);
 
     int placedMines = 0;
 
@@ -129,12 +131,12 @@ void MinesweeperBoard::InitializeMines(int minecount, int row, int col)
 
 BoardSize MinesweeperBoard::getBoardSize()
 {
-    return Size;
+    return *Size;
 }
 
 void inline MinesweeperBoard::setBoardSize(int x, int y)
 {
-    Size = {x, y};
+    *Size = {x, y};
 }
 
 void MinesweeperBoard::RevealTile(int x, int y)
@@ -148,7 +150,7 @@ void MinesweeperBoard::RevealTile(int x, int y)
     if (!isBoardInitialized)
     {
         isBoardInitialized = true;
-        InitializeMines(MINECOUNT, x, y);
+        InitializeMines(TotalMines, x, y);
     }
 
     if (Grid[x][y].isMine)
@@ -162,9 +164,9 @@ void MinesweeperBoard::RevealTile(int x, int y)
 
     if (Grid[x][y].neighborMines == 0)
     {
-        for (int h = std::max(x - 1, 0); h <= std::min(x + 1, Size.row - 1); h++)
+        for (int h = std::max(x - 1, 0); h <= std::min(x + 1, Size->row - 1); h++)
         {
-            for (int v = std::max(y - 1, 0); v <= std::min(y + 1, Size.col - 1); v++)
+            for (int v = std::max(y - 1, 0); v <= std::min(y + 1, Size->col - 1); v++)
             {
                 if (!Grid[h][v].isRevealed)
                 {
@@ -174,7 +176,7 @@ void MinesweeperBoard::RevealTile(int x, int y)
         }
     }
 
-    if (RevealedTiles >= Size.row * Size.col - TotalMines)
+    if (RevealedTiles >= Size->row * Size->col - TotalMines)
     {
         isGameWon = true;
     }
@@ -183,9 +185,9 @@ void MinesweeperBoard::RevealTile(int x, int y)
 int MinesweeperBoard::CalculateNeighborMines(int x, int y)
 {
     int MineCount = 0;
-    for (int h = std::max(x - 1, 0); h <= std::min(x + 1, Size.row - 1); h++)
+    for (int h = std::max(x - 1, 0); h <= std::min(x + 1, Size->row - 1); h++)
     {
-        for (int v = std::max(y - 1, 0); v <= std::min(y + 1, Size.col - 1); v++)
+        for (int v = std::max(y - 1, 0); v <= std::min(y + 1, Size->col - 1); v++)
         {
             if (Grid[h][v].isMine)
             {

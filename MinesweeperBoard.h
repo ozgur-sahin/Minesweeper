@@ -2,6 +2,7 @@
 // #include <random>
 #include <vector>
 #include <stdexcept>
+#include "ConfigStructs.h"
 // #include <utility>
 #define MINECOUNT 10
 
@@ -13,16 +14,10 @@ struct BoardTile
     int neighborMines = 0;
 };
 
-struct BoardSize
-{
-    int row;
-    int col;
-};
-
 class MinesweeperBoard
 {
 private:
-    BoardSize Size;
+    BoardSize *Size;
     std::vector<std::vector<BoardTile>> Grid;
     void InitializeMines(int, int, int);
     void setBoardSize(int, int);
@@ -36,7 +31,7 @@ private:
     int RevealedTiles = 0;
 
 public:
-    MinesweeperBoard(int, int);
+    MinesweeperBoard(MineSweeperConfig *);
     void DrawBoardASCII();
     BoardSize getBoardSize();
     void RevealTile(int, int);

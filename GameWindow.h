@@ -32,6 +32,6 @@ private slots:
     void onRightClick();
 
 public:
-    GameWindow(int HSize, int VSize, QWidget *parent = nullptr);
+    GameWindow(Config *, QWidget *parent = nullptr);
     ~GameWindow();
 };

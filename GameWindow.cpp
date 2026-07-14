@@ -1,8 +1,12 @@
 #include "GameWindow.h"
 
-GameWindow::GameWindow(int HSize, int VSize, QWidget *parent) : QWidget(parent)
+GameWindow::GameWindow(Config *conf, QWidget *parent) : QWidget(parent)
 {
-    GameBoard = new MinesweeperBoard{5, 5};
+    int HSize = conf->qtconf.windowSize[0];
+    int VSize = conf->qtconf.windowSize[1];
+    int *tileSize = conf->qtconf.tileSize;
+
+    GameBoard = new MinesweeperBoard{&conf->msconf};
     GameBoard->DrawBoardFull();
     this->resize(HSize, VSize);
     this->setWindowTitle("Minesweeper");
@@ -14,7 +18,7 @@ GameWindow::GameWindow(int HSize, int VSize, QWidget *parent) : QWidget(parent)
     // std::cout << "Layout created...\n";
 
     int rowNo = 0;
-    GameGrid.resize(5, std::vector<MinesweeperQtTile *>(5));
+    GameGrid.resize(conf->msconf.GameBoardSize.row, std::vector<MinesweeperQtTile *>(conf->msconf.GameBoardSize.col));
     for (std::vector<MinesweeperQtTile *> &row : GameGrid)
     {
         // std::cout << rowNo << std::endl;
@@ -22,7 +26,7 @@ GameWindow::GameWindow(int HSize, int VSize, QWidget *parent) : QWidget(parent)
         for (MinesweeperQtTile *&tile : row)
         {
             tile = new MinesweeperQtTile(rowNo, colNo, this);
-            tile->resize(80, 80);
+            tile->resize(tileSize[0], tileSize[1]);
             layout->addWidget(tile, rowNo, colNo);
             tile->setText(" ");
             connect(tile, &MinesweeperQtTile::leftclicked, this, &GameWindow::onLeftClick);
@@ -65,7 +69,7 @@ void GameWindow::onLeftClick()
 
 void GameWindow::onRightClick()
 {
-    std::cout << "Button was right clicked!\n";
+    // std::cout << "Button was right clicked!\n";
 
     MinesweeperQtTile *clickedButton = qobject_cast<MinesweeperQtTile *>(sender());
 
@@ -124,7 +128,7 @@ void GameWindow::ReDrawBoard()
                     else
                     {
                         int neighborMines = GameBoard->GetNeighborMines(coord.rowNo, coord.colNo);
-                        std::cout << neighborMines << "\n";
+                        // std::cout << neighborMines << "\n";
                         tile->setText(QString::number(neighborMines));
                     }
                 }
