@@ -124,6 +124,7 @@ void GameWindow::ReDrawBoard()
                     if (GameBoard->GetIsMine(coord.rowNo, coord.colNo))
                     {
                         tile->setText("&x");
+                        tile->setStyleSheet("QPushButton { color: red; }");
                     }
                     else
                     {
@@ -135,6 +136,7 @@ void GameWindow::ReDrawBoard()
                 else if (GameBoard->GetFlaggedState(coord.rowNo, coord.colNo))
                 {
                     tile->setText("&F");
+                    tile->setStyleSheet("QPushButton { color: red; }");
                 }
                 else
                 {
