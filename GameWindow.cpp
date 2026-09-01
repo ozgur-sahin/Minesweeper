@@ -1,7 +1,8 @@
 #include "GameWindow.h"
 
-GameWindow::GameWindow(Config *conf, QWidget *parent) : QWidget(parent)
+GameWindow::GameWindow(Config *config, QWidget *parent) : QWidget(parent)
 {
+    conf = config;
     int HSize = conf->qtconf.windowSize[0];
     int VSize = conf->qtconf.windowSize[1];
     int *tileSize = conf->qtconf.tileSize;
@@ -11,10 +12,16 @@ GameWindow::GameWindow(Config *conf, QWidget *parent) : QWidget(parent)
     this->resize(HSize, VSize);
     this->setWindowTitle("Minesweeper");
 
+    GenerateTileLayout();
+}
+
+void GameWindow::GenerateTileLayout()
+{
     QGridLayout *layout = new QGridLayout(this);
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
     // std::cout << "Layout created...\n";
 
     int rowNo = 0;
@@ -26,16 +33,33 @@ GameWindow::GameWindow(Config *conf, QWidget *parent) : QWidget(parent)
         for (MinesweeperQtTile *&tile : row)
         {
             tile = new MinesweeperQtTile(rowNo, colNo, this);
-            tile->resize(tileSize[0], tileSize[1]);
+            // tile->resize(tileSize[0], tileSize[1]);
             layout->addWidget(tile, rowNo, colNo);
             tile->setText(" ");
             connect(tile, &MinesweeperQtTile::leftclicked, this, &GameWindow::onLeftClick);
             connect(tile, &MinesweeperQtTile::rightclicked, this, &GameWindow::onRightClick);
 
+            // 1. Force the layout engine to freeze BOTH horizontal and vertical metrics
+            tile->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+            // 2. Lock down the exact dimensions
+            tile->setFixedSize(80, 80);
+
             // std::cout << "Tile: " << rowNo << ", " << colNo << "\n";
             colNo++;
         }
         rowNo++;
+    }
+
+    // Explicitly force the layout manager to respect the 80px grid boundaries
+    for (int row = 0; row < conf->msconf.GameBoardSize.row; ++row)
+    {
+        layout->setRowMinimumHeight(row, 80);
+    }
+
+    for (int col = 0; col < conf->msconf.GameBoardSize.col; ++col)
+    {
+        layout->setColumnMinimumWidth(col, 80);
     }
 }
 

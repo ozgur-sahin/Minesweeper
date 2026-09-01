@@ -2,20 +2,20 @@
 
 struct BoardSize
 {
-    int row = 15;
-    int col = 15;
+    int row = 8;
+    int col = 8;
 };
 
 struct MineSweeperConfig
 {
-    int minecount = 50;
+    int minecount = 15;
     BoardSize GameBoardSize;
 };
 
 struct QtBoardConfig
 {
-    int windowSize[2] = {400, 400};
     int tileSize[2] = {80, 80};
+    int windowSize[2] = {400, 400};
 };
 
 struct Config

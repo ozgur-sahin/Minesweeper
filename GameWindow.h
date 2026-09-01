@@ -11,7 +11,6 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QString>
-#include <QMouseEvent>
 
 class GameWindow : public QWidget
 {
@@ -20,11 +19,13 @@ class GameWindow : public QWidget
 private:
     std::vector<std::vector<MinesweeperQtTile *>> GameGrid;
     MinesweeperBoard *GameBoard;
+    Config *conf;
 
     void ReDrawBoard();
     void onGameOver();
     void onGameWin();
     void DisableAllTiles();
+    void GenerateTileLayout();
 
 private slots:
     // The functions that execute when the click signal fires
